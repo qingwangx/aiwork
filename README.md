@@ -71,6 +71,23 @@ F:\AIwork\
 
 要调整 AI 的行为习惯，直接改 `AGENTS.md` 即可。
 
+## 版本控制
+
+`F:\AIwork` 已初始化为 git 仓库（分支 `main`）。改动有记录，误删可回滚。
+
+```bash
+git status              # 看改了什么
+git log --oneline       # 看历史
+git checkout -- <文件>   # 撤销未提交的修改
+git revert <提交号>      # 回滚已提交的内容（推荐，安全）
+```
+
+`09-临时/` 和 `02-数据/` 的内容已加入忽略清单 —— 草稿和大数据不会污染历史记录，
+但目录本身保留（`.gitkeep` 占位）。
+
+> 提交身份是仓库级的（`wangwang / wangwang@AIwork.local`），没有动你的全局 git 配置。
+> 若要推送到 Gitee/GitHub，先告诉我地址。
+
 ## 维护节奏
 
 - **每次开工**：先看 `00-收件箱/`，该归类的归类
