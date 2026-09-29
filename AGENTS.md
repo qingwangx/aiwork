@@ -82,6 +82,21 @@
 - **不要用 `--no-verify` 跳过**（除非用户明确要求）；远端 CI 也会拦
 - 改了目录规则，同步改校验脚本顶部「规范定义」段与规范文档
 
+## 凭据管理
+
+GitHub 凭据存于 **Windows 凭据管理器**（`credential.helper=manager`），
+**不写进 `.git/config`**，也不许往 remote URL 里内嵌 token。
+
+- **认证方式**：Git Credential Manager (GCM) 浏览器 OAuth——需要重新认证时
+  在交互式终端跑 `git push`，会弹浏览器窗口，登录 `qingwangx` 账号授权即可
+- **查看/清除凭据**：
+  ```bash
+  cmdkey /list | grep -i github          # 看有没有
+  printf 'protocol=https\nhost=github.com\n\n' | git credential reject   # 清除（下次操作会重新走浏览器授权）
+  ```
+- **不要在非交互环境（无 TTY）里触发认证**：GCM 等不到浏览器回调会挂住
+- **永远不要把 token 值写进任何进版本库的文件**；临时传递用 `09-临时/`（已忽略），用完立即删
+
 ## 清理节奏
 
 - `00-收件箱/`：每次开工先清
