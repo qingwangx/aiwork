@@ -58,6 +58,20 @@
 - 危险操作（`reset --hard`、强推、删分支）**必须先问用户**
 - 需要回滚时优先 `git revert`，不用 `reset --hard`
 
+## 网络环境（重要，排查问题前先读）
+
+本机 GitHub 访问依赖 **Steam++（Watt Toolkit）**：它向 `hosts` 写入了 31 条
+「GitHub 域名 → `127.0.0.1`」记录，靠本地代理转发。
+
+- **Steam++ 加速未开启时 `github.com` 完全不通**（connect 超时，不是 SSL 错误）
+- 非管理员权限**改不了 hosts**；遇到连不上先让用户确认 Steam++ 已开启加速
+- `api.github.com` 可直连真实 IP 绕过：`curl --resolve api.github.com:443:20.205.243.168 ...`
+- 本仓库已设 `http.schannelCheckRevoke=false`——否则 Windows schannel 的证书
+  吊销检查会让连接失败（`CRYPT_E_NO_REVOCATION_CHECK`）。curl 对应 `--ssl-no-revoke`
+
+远端仓库：<https://github.com/qingwangx/aiwork>（账号 `qingwangx`）
+凭据存于 Windows 凭据管理器，**不在** `.git/config` 里；不要往 remote URL 内嵌 token。
+
 ## 清理节奏
 
 - `00-收件箱/`：每次开工先清
