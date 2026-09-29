@@ -1,5 +1,6 @@
 # AIwork 工作区
 
+> 第一个 GitHub 仓库，用于同步 AI 工作创作及产出
 > Hermes AI 助手的默认工作空间 · `F:\AIwork`
 > 建立日期：2026-09-29
 
