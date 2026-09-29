@@ -94,7 +94,11 @@ GitHub 凭据存于 **Windows 凭据管理器**（`credential.helper=manager`）
   cmdkey /list | grep -i github          # 看有没有
   printf 'protocol=https\nhost=github.com\n\n' | git credential reject   # 清除（下次操作会重新走浏览器授权）
   ```
-- **不要在非交互环境（无 TTY）里触发认证**：GCM 等不到浏览器回调会挂住
+- **不要在非交互环境（无 TTY）里触发认证**：GCM 等不到浏览器回调会挂住。
+  **后台 PTY 进程是可以的**——`terminal(background=true, pty=true)` 跑 `git push`，
+  会打印 `please complete authentication in your browser...` 并弹出浏览器，
+  用户在浏览器授权后 push 自动完成（已实测）。纯非 PTY 的后台进程不行
+- **已实测凭据**：GCM OAuth 令牌（`gho_` 前缀），scope 仅 `gist, repo, workflow`
 - **永远不要把 token 值写进任何进版本库的文件**；临时传递用 `09-临时/`（已忽略），用完立即删
 
 ## 清理节奏
