@@ -1,0 +1,19 @@
+name: 结构校验
+
+# 远端兜底：本地钩子可以被 --no-verify 跳过，CI 不会。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  structure:
+    name: 校验目录结构
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 运行结构校验器
+        run: bash 04-脚本/检查结构.sh

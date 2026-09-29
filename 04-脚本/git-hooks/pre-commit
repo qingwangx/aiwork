@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# ============================================================
+# AIwork 结构守卫（git pre-commit 钩子）
+#
+# 由 git 的 core.hooksPath 指向本目录（见 04-脚本/安装钩子.sh），
+# 因此钩子随仓库版本化，不是散落的本地脚本。
+#
+# 作用: 提交前校验目录结构，结构有错则拦截提交。
+# 应急跳过: git commit --no-verify
+# ============================================================
+set -uo pipefail
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+CHECK="$ROOT/04-脚本/检查结构.sh"
+
+# 校验脚本不存在时放行（例如刚克隆还没拉全）
+[ -f "$CHECK" ] || exit 0
+
+out="$(cd "$ROOT" && bash "$CHECK" --quiet 2>&1)"
+rc=$?
+
+if [ "$rc" -ne 0 ]; then
+  printf '\n\033[31m  ✗ 提交被拦截：目录结构不符合规范\033[0m\n\n'
+  printf '%s\n' "$out" | grep -E "错误|警告" | sed 's/^/    /'
+  printf '\n  自动修复: \033[36mbash 04-脚本/检查结构.sh --fix\033[0m\n'
+  printf '  跳过校验: \033[90mgit commit --no-verify\033[0m\n\n'
+  exit 1
+fi
+
+# 有警告但无错误 -> 放行，只提示
+# 注意: 只匹配逐行的 "! 警告"，不能用 "警告" —— 摘要行「错误: 0   警告: 0」也含该词
+warns="$(printf '%s\n' "$out" | grep -c "! 警告" || true)"
+warns="${warns//[^0-9]/}"
+if [ "${warns:-0}" -gt 0 ]; then
+  printf '\n\033[33m  ! 结构校验通过，但有 %s 条命名/整洁度警告\033[0m\n' "$warns"
+  printf '%s\n' "$out" | grep "! 警告" | sed 's/^/    /'
+  printf '\n'
+fi
+
+exit 0
