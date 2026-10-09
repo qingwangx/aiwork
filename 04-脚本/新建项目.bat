@@ -1,11 +1,16 @@
 @echo off
-rem 双击运行：新建一个标准项目目录
+rem ============================================================
+rem Double-click to scaffold a new project (01-xiangmu\<name>).
+rem
+rem THIS FILE MUST STAY PURE ASCII -- not even in comments.
+rem cmd.exe parses .bat content using the console codepage (GBK),
+rem and the chcp below shifts cmd's parse offset: any non-ASCII
+rem byte here then gets mis-parsed as a bogus command. Verified
+rem twice (errors: "'?' is not recognized", "'m' is not recognized").
+rem All Chinese user-facing text lives in new-project.sh instead.
+rem ============================================================
 setlocal
-set /p NAME=请输入项目名（如 桥梁监测）： 
-if "%NAME%"=="" (
-  echo 项目名不能为空。
-  pause
-  exit /b 1
-)
-bash "%~dp0新建项目.sh" "%NAME%"
+bash "%~dp0new-project.sh"
+chcp 936 >nul
+echo.
 pause

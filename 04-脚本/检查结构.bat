@@ -1,7 +1,13 @@
 @echo off
-rem 双击运行：检查 F:\AIwork 目录结构
-rem 自动补齐缺失目录：命令行执行  检查结构.bat --fix
+rem ============================================================
+rem Double-click to check the workspace structure.
+rem From a command line, pass --fix to auto-repair missing dirs.
+rem
+rem Pure ASCII on purpose, comments included -- see the note in
+rem the new-project launcher for why.
+rem ============================================================
 setlocal
-bash "%~dp0检查结构.sh" %*
+bash "%~dp0check-structure.sh" %*
+chcp 936 >nul
 echo.
 pause

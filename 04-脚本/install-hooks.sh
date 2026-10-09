@@ -5,7 +5,7 @@
 # 把 core.hooksPath 指向版本化的 04-脚本/git-hooks/，
 # 这样钩子本身也进版本库，换机器/重新克隆后跑一次本脚本即可。
 #
-# 用法: bash 04-脚本/安装钩子.sh
+# 用法: bash 04-脚本/install-hooks.sh
 # ============================================================
 set -euo pipefail
 
@@ -28,4 +28,4 @@ for h in "04-脚本/git-hooks/"*; do
   [ -f "$h" ] && echo "    - $(basename "$h")"
 done
 echo ""
-echo "  验证: bash 04-脚本/检查结构.sh   （提交时会自动运行）"
+echo "  验证: bash 04-脚本/check-structure.sh   （提交时会自动运行）"

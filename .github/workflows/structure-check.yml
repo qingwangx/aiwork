@@ -16,4 +16,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 运行结构校验器
-        run: bash 04-脚本/检查结构.sh
+        run: bash 04-脚本/check-structure.sh

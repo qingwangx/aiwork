@@ -3,9 +3,9 @@
 # AIwork 工作区结构校验器
 #
 # 用法:
-#   bash 04-脚本/检查结构.sh           # 检查，有问题则退出码 1
-#   bash 04-脚本/检查结构.sh --fix     # 检查并自动补齐缺失的目录/README
-#   bash 04-脚本/检查结构.sh --quiet   # 只报问题，不打印通过项
+#   bash 04-脚本/check-structure.sh           # 检查，有问题则退出码 1
+#   bash 04-脚本/check-structure.sh --fix     # 检查并自动补齐缺失的目录/README
+#   bash 04-脚本/check-structure.sh --quiet   # 只报问题，不打印通过项
 #
 # 退出码: 0=全部通过  1=存在错误  2=用法错误
 # 规范见: 03-文档/目录结构规范.md
@@ -136,6 +136,22 @@ while IFS= read -r -d '' item; do
   done
 done < <(find "$ROOT" -mindepth 1 \( -name .git -prune \) -o -print0)
 [ "$n" -eq 0 ] && ok "未发现不规范命名"
+
+sec "⑥ .bat 文件编码"
+# cmd.exe 按控制台代码页（GBK）解析 .bat 内容，且脚本里的 chcp 会让
+# cmd 的解析偏移错位——任何非 ASCII 字节都会被当成乱码命令。
+# 已实测会报 "'?' is not recognized" / "'m' is not recognized"。
+# 因此 .bat 必须全 ASCII（含注释），中文一律下沉到 .sh 里。
+n=0
+while IFS= read -r -d '' f; do
+  bad="$(LC_ALL=C tr -d '\000-\177' < "$f" | wc -c)"
+  bad="${bad//[^0-9]/}"
+  if [ "${bad:-0}" -gt 0 ]; then
+    err "含 $bad 个非 ASCII 字节（cmd 会误解析导致批处理失效）: ${f#"$ROOT"/}"
+    n=$((n+1))
+  fi
+done < <(find "$ROOT" -name .git -prune -o -name '*.bat' -type f -print0)
+[ "$n" -eq 0 ] && ok "所有 .bat 均为纯 ASCII"
 
 # ============================================================
 printf '\n\033[1m────────────────────────────────\033[0m\n'

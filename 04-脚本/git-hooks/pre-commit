@@ -2,7 +2,7 @@
 # ============================================================
 # AIwork 结构守卫（git pre-commit 钩子）
 #
-# 由 git 的 core.hooksPath 指向本目录（见 04-脚本/安装钩子.sh），
+# 由 git 的 core.hooksPath 指向本目录（见 04-脚本/install-hooks.sh），
 # 因此钩子随仓库版本化，不是散落的本地脚本。
 #
 # 作用: 提交前校验目录结构，结构有错则拦截提交。
@@ -11,7 +11,7 @@
 set -uo pipefail
 
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
-CHECK="$ROOT/04-脚本/检查结构.sh"
+CHECK="$ROOT/04-脚本/check-structure.sh"
 
 # 校验脚本不存在时放行（例如刚克隆还没拉全）
 [ -f "$CHECK" ] || exit 0
@@ -22,7 +22,7 @@ rc=$?
 if [ "$rc" -ne 0 ]; then
   printf '\n\033[31m  ✗ 提交被拦截：目录结构不符合规范\033[0m\n\n'
   printf '%s\n' "$out" | grep -E "错误|警告" | sed 's/^/    /'
-  printf '\n  自动修复: \033[36mbash 04-脚本/检查结构.sh --fix\033[0m\n'
+  printf '\n  自动修复: \033[36mbash 04-脚本/check-structure.sh --fix\033[0m\n'
   printf '  跳过校验: \033[90mgit commit --no-verify\033[0m\n\n'
   exit 1
 fi
